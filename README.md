@@ -9,7 +9,7 @@
    conda activate hz_dynamic_nav
    ```
    
-1. **conda install pytorch and cuda **
+1. **conda install pytorch and cuda**
       ```
       conda install pytorch cudatoolkit=11.3 -c pytorch -c nvidia
       ```
