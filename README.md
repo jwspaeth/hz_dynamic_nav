@@ -2,21 +2,28 @@
 
 ## Installation
 
-1. **Preparing conda env**
-
-   Assuming you have [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) installed, let's prepare a conda env:
+1. **Prepare conda env**
    ```bash
    # We require python>=3.7 and cmake>=3.10
-   conda create -n habitat python=3.7 cmake=3.14.0
-   conda activate habitat
+   conda create -n hz_dynamic_nav python=3.7 cmake=3.14.0
+   conda activate hz_dynamic_nav
    ```
+   
+1. **conda install pytorch and cuda **
+      ```
+      conda install pytorch cudatoolkit=11.3 -c pytorch -c nvidia
+      ```
 
-1. **conda install habitat-sim**
-   - To install habitat-sim with bullet physics
+1. **conda install habitat-sim with bullet physics**
+   - To install habitat-sim with UI
       ```
       conda install habitat-sim withbullet -c conda-forge -c aihabitat
       ```
-      See Habitat-Sim's [installation instructions](https://github.com/facebookresearch/habitat-sim#installation) for more details.
+      
+   - To install habitat-sim headless
+      ```
+      conda install habitat-sim withbullet headless -c conda-forge -c aihabitat
+      ```
 
 1. **pip install habitat-lab stable version**.
 
