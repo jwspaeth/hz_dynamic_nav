@@ -2,19 +2,19 @@
 
 ## Installation
 
-1. **Prepare conda env**
+1. **Prepare conda env**.
    ```bash
    # We require python>=3.7 and cmake>=3.10
    conda create -n hz_dynamic_nav python=3.7 cmake=3.14.0
    conda activate hz_dynamic_nav
    ```
    
-1. **Install pytorch and cuda**
+1. **Install pytorch and cuda**.
       ```
       conda install pytorch cudatoolkit=11.3 -c pytorch -c nvidia
       ```
 
-1. **Install habitat-sim with bullet physics**
+1. **Install habitat-sim with bullet physics**.
    - To install habitat-sim with UI
       ```
       conda install habitat-sim withbullet -c conda-forge -c aihabitat
