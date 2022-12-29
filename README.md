@@ -25,11 +25,12 @@
       conda install habitat-sim withbullet headless -c conda-forge -c aihabitat
       ```
 
-1. **pip install habitat-lab stable version**.
+1. **pip install habitat-lab**.
 
       ```bash
       git clone --branch stable https://github.com/facebookresearch/habitat-lab.git
       cd habitat-lab
+      git checkout v0.2.3
       pip install -e habitat-lab  # install habitat_lab
       ```
 1. **Install habitat-baselines**.
