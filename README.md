@@ -46,8 +46,8 @@
 
    Run in habitat-baselines:
    
-      ```bash
-      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver   habitat_baselines.num_environments=1
+      ```
+      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml
       ```
       
    Run in hz_dynamic_nav:
