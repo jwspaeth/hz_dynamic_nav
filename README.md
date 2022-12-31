@@ -44,13 +44,13 @@
       
 ## Running
 
-   Run in habitat-baselines:
+1. Run in habitat-baselines:
    
       ```
-      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml
+      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver   habitat_baselines.num_environments=1
       ```
       
-   Run in hz_dynamic_nav:
+1. Run in hz_dynamic_nav:
 
       ```
       python -u hz_dynamic_nav/run.py   --run-type train   --exp-config $HZ_HABBASE/habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver   habitat_baselines.num_environments=1
