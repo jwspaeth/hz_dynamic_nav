@@ -47,7 +47,7 @@
 1. **Run in habitat-baselines**:
    
       ```
-      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver   habitat_baselines.num_environments=1
+      python -u habitat_baselines/run.py --run-type train --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver habitat_baselines.num_environments=1
       ```
       
 1. **Run in hz_dynamic_nav**:
@@ -55,5 +55,5 @@
    $HZ_HABBASE is the environment variable pointing to the absolute path of habitat-lab/habitat-baselines.
 
       ```
-      python -u hz_dynamic_nav/run.py   --run-type train   --exp-config $HZ_HABBASE/habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver   habitat_baselines.num_environments=1
+      python -u hz_dynamic_nav/run.py --run-type train --exp-config $HZ_HABBASE/habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver habitat_baselines.num_environments=1
       ```
