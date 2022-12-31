@@ -33,6 +33,7 @@
       git checkout v0.2.3
       pip install -e habitat-lab  # install habitat_lab
       ```
+      
 1. **Install habitat-baselines**.
 
     The command above will install only core of Habitat-Lab. To include habitat_baselines along with all additional requirements, use the command below after installing habitat-lab:
@@ -40,11 +41,12 @@
       ```bash
       pip install -e habitat-baselines  # install habitat_baselines
       ```
+      
 ## Running
 - Run in habitat-baselines:
 
       ```bash
-      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver   habitat_baselines.num_environments=1
+      python -u habitat_baselines/run.py   --run-type train   --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml
       ```
       
 - Run in hz_dynamic_nav:
