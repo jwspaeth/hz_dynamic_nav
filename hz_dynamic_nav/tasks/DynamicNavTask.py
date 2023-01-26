@@ -13,6 +13,7 @@ from omegaconf import DictConfig
 @registry.register_task(name="DynamicNav")
 class DynamicNavTask(NavigationTask):
     def reset(self, episode: Episode):
+        print("Resetting people")
         self._sim.reset_people()
         episode.people_paths = [p.waypoints for p in self._sim.people]
         observations = super().reset(episode)

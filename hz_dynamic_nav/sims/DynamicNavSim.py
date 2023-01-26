@@ -1,3 +1,4 @@
+import math
 from typing import List, Optional
 
 import habitat_sim
@@ -19,6 +20,7 @@ class DynamicNavSim(HabitatSim):
         self.people_template_ids = obj_templates_mgr.load_configs(
             "/nethome/jspaeth7/home-flash/workspaces/habitat-lab/habitat-baselines/data/person_meshes"
         )
+        print("People template ids: ", self.people_template_ids)
         self.person_ids = []
         self.people_mask = config.get("PEOPLE_MASK", False)
         self.num_people = config.get("NUM_PEOPLE", 1)
@@ -33,20 +35,25 @@ class DynamicNavSim(HabitatSim):
 
     def reset_people(self):
         agent_position = self.get_agent_state().position
-
+        rigid_object_manager = self.get_rigid_object_manager()
         # Check if humans have been erased (sim was reset)
+        print("Num object ids: ", sim_utilities.get_all_object_ids(self))
         if not sim_utilities.get_all_object_ids(self):
-            self.person_ids = []
+            self.person_references = []
             for _ in range(self.num_people):
                 for person_template_id in self.people_template_ids:
-                    self.person_ids.append(self.add_object(person_template_id))
+                    person_reference = rigid_object_manager.add_object_by_template_id(
+                        person_template_id
+                    )
+                    self.person_references.append(person_reference.object_id)
+                    # self.person_ids.append(self.add_object(person_template_id))
 
         # Spawn humans
         min_path_dist = 3
         max_level = 0.6
         agent_x, agent_y, agent_z = self.get_agent_state(0).position
         self.people = []
-        for person_id in self.person_ids:
+        for person_reference in self.person_references:
             valid_walk = False
             while not valid_walk:
                 start = np.array(self.sample_navigable_point())
@@ -75,20 +82,23 @@ class DynamicNavSim(HabitatSim):
                 )
                 if not valid_distance:
                     min_path_dist *= 0.95
-
             waypoints = sp.points
             heading = np.random.rand() * 2 * np.pi - np.pi
             rotation = np.quaternion(np.cos(heading), 0, np.sin(heading), 0)
             rotation = np.normalized(rotation)
             rotation = mn.Quaternion(rotation.imag, rotation.real)
-            self.set_translation([start[0], start[1] + 0.9, start[2]], person_id)
-            self.set_rotation(rotation, person_id)
+            # self.set_translation([start[0], start[1] + 0.9, start[2]], person_id)
+            person_reference.translation = mn.Vector3(
+                start[0], start[1] + 0.9, start[2]
+            )
+            # self.set_rotation(rotation, person_id)
+            person_reference.rotation = rotation
             self.set_object_motion_type(
-                habitat_sim.physics.MotionType.KINEMATIC, person_id
+                habitat_sim.physics.MotionType.KINEMATIC, person_reference.object_id
             )
             spf = ShortestPathFollowerv2(
                 sim=self,
-                object_id=person_id,
+                object_id=person_reference.object_id,
                 waypoints=waypoints,
                 lin_speed=self.lin_speed,
                 ang_speed=self.ang_speed,
@@ -119,10 +129,11 @@ class DynamicNavSim(HabitatSim):
         """
         # 'Remove' people
         all_pos = []
-        for person_id in sim_utilities.get_all_object_ids(self):
-            pos = self.get_translation(person_id)
-            all_pos.append(pos)
-            self.set_translation([pos[0], pos[1] + 10, pos[2]], person_id)
+        # for person_id in sim_utilities.get_all_object_ids(self):
+        for person_reference in self.person_references:
+            translation = person_reference.translation
+            all_pos.append(translation)
+            person_reference.translation[1] = translation[1] + 10
 
         # Refresh observations
         no_ppl_observations = super().get_observations_at(
