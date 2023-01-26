@@ -90,10 +90,10 @@ class DynamicNavSim(HabitatSim):
                 start[0], start[1] + 0.9, start[2]
             )
             person_reference.rotation = rotation
-            person_reference.motion_type(habitat_sim.physics.MotionType.KINEMATIC)
+            person_reference.motion_type = habitat_sim.physics.MotionType.KINEMATIC
             spf = ShortestPathFollowerv2(
                 sim=self,
-                object_id=person_reference.object_id,
+                person_reference=person_reference,
                 waypoints=waypoints,
                 lin_speed=self.lin_speed,
                 ang_speed=self.ang_speed,
