@@ -45,7 +45,7 @@ class DynamicNavSim(HabitatSim):
                     person_reference = rigid_object_manager.add_object_by_template_id(
                         person_template_id
                     )
-                    self.person_references.append(person_reference.object_id)
+                    self.person_references.append(person_reference)
                     # self.person_ids.append(self.add_object(person_template_id))
 
         # Spawn humans
