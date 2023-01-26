@@ -188,6 +188,9 @@ class ShortestPathFollowerv2:
         the next waypoint).
         :return:
         """
+        print(
+            f"Person {self.person_reference.object_id} translation: {self.person_reference.translation}"
+        )
         # If waypoint_idx exceeds max length, wrap around
         waypoint_idx = self.next_waypoint_idx % len(self.waypoints)
 
