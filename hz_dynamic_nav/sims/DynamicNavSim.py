@@ -6,7 +6,6 @@ import magnum as mn
 import numpy as np
 from habitat.core.registry import registry
 from habitat.core.simulator import Observations
-from habitat.sims.habitat_simulator import sim_utilities
 from habitat.sims.habitat_simulator.habitat_simulator import HabitatSim
 from hz_dynamic_nav.utils.geometry_utils import get_heading_error, quat_to_rad
 from omegaconf import DictConfig
@@ -37,8 +36,7 @@ class DynamicNavSim(HabitatSim):
         agent_position = self.get_agent_state().position
         rigid_object_manager = self.get_rigid_object_manager()
         # Check if humans have been erased (sim was reset)
-        print("Num object ids: ", sim_utilities.get_all_object_ids(self))
-        if not sim_utilities.get_all_object_ids(self):
+        if rigid_object_manager.get_num_objects() == 0:
             self.person_references = []
             for _ in range(self.num_people):
                 for person_template_id in self.people_template_ids:
@@ -124,7 +122,6 @@ class DynamicNavSim(HabitatSim):
         """
         # 'Remove' people
         all_pos = []
-        # for person_id in sim_utilities.get_all_object_ids(self):
         for person_reference in self.person_references:
             translation = person_reference.translation
             all_pos.append(translation)
