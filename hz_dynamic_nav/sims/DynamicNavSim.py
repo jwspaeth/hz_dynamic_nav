@@ -35,7 +35,7 @@ class DynamicNavSim(HabitatSim):
         agent_position = self.get_agent_state().position
 
         # Check if humans have been erased (sim was reset)
-        if not sim_utilities.get_all_object_ids():
+        if not sim_utilities.get_all_object_ids(self):
             self.person_ids = []
             for _ in range(self.num_people):
                 for person_template_id in self.people_template_ids:
@@ -119,7 +119,7 @@ class DynamicNavSim(HabitatSim):
         """
         # 'Remove' people
         all_pos = []
-        for person_id in sim_utilities.get_all_object_ids():
+        for person_id in sim_utilities.get_all_object_ids(self):
             pos = self.get_translation(person_id)
             all_pos.append(pos)
             self.set_translation([pos[0], pos[1] + 10, pos[2]], person_id)
@@ -138,7 +138,7 @@ class DynamicNavSim(HabitatSim):
         ] = 0
 
         # Put people back
-        for pos, person_id in zip(all_pos, sim_utilities.get_all_object_ids()):
+        for pos, person_id in zip(all_pos, sim_utilities.get_all_object_ids(self)):
             self.set_translation(pos, person_id)
 
         return observations
