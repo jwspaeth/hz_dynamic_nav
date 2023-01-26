@@ -46,7 +46,6 @@ class DynamicNavSim(HabitatSim):
                         person_template_id
                     )
                     self.person_references.append(person_reference)
-                    # self.person_ids.append(self.add_object(person_template_id))
 
         # Spawn humans
         min_path_dist = 3
@@ -87,15 +86,11 @@ class DynamicNavSim(HabitatSim):
             rotation = np.quaternion(np.cos(heading), 0, np.sin(heading), 0)
             rotation = np.normalized(rotation)
             rotation = mn.Quaternion(rotation.imag, rotation.real)
-            # self.set_translation([start[0], start[1] + 0.9, start[2]], person_id)
             person_reference.translation = mn.Vector3(
                 start[0], start[1] + 0.9, start[2]
             )
-            # self.set_rotation(rotation, person_id)
             person_reference.rotation = rotation
-            self.set_object_motion_type(
-                habitat_sim.physics.MotionType.KINEMATIC, person_reference.object_id
-            )
+            person_reference.motion_type(habitat_sim.physics.MotionType.KINEMATIC)
             spf = ShortestPathFollowerv2(
                 sim=self,
                 object_id=person_reference.object_id,
@@ -149,8 +144,8 @@ class DynamicNavSim(HabitatSim):
         ] = 0
 
         # Put people back
-        for pos, person_id in zip(all_pos, sim_utilities.get_all_object_ids(self)):
-            self.set_translation(pos, person_id)
+        for pos, person_reference in zip(all_pos, self.person_references):
+            person_reference.translation = pos
 
         return observations
 
@@ -159,14 +154,14 @@ class ShortestPathFollowerv2:
     def __init__(
         self,
         sim: DynamicNavSim,
-        object_id,  # int for old Habitat, something else for new Habitat...
+        person_reference,  # int for old Habitat, something else for new Habitat...
         waypoints: List[np.ndarray],
         lin_speed: float,
         ang_speed: float,
         time_step: float,
     ):
         self._sim = sim
-        self.object_id = object_id
+        self.person_reference = person_reference
 
         self.vel_control = habitat_sim.physics.VelocityControl()
         self.vel_control.controlling_lin_vel = True
@@ -200,8 +195,8 @@ class ShortestPathFollowerv2:
         waypoint_idx = self.next_waypoint_idx % len(self.waypoints)
 
         waypoint = np.array(self.waypoints[waypoint_idx])
-        translation = self._sim.get_translation(self.object_id)
-        magnum_quaternion = self._sim.get_rotation(self.object_id)
+        translation = self.person_reference.translation
+        magnum_quaternion = self.person_reference.rotation
 
         # Face the next waypoint if we aren't already facing it
         if not self.done_turning:
@@ -257,6 +252,6 @@ class ShortestPathFollowerv2:
         rigid_state = habitat_sim.bindings.RigidState(magnum_quaternion, translation)
         rigid_state = self.vel_control.integrate_transform(self.time_step, rigid_state)
 
-        self._sim.set_translation(rigid_state.translation, self.object_id)
-        self._sim.set_rotation(rigid_state.rotation, self.object_id)
+        self.person_reference.translation = rigid_state.translation
+        self.person_reference.rotation = rigid_state.rotation
         self.current_position = rigid_state.translation
