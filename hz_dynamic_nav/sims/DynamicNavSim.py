@@ -1,31 +1,16 @@
-import math
-import random
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import habitat_sim
 import magnum as mn
 import numpy as np
-import quaternion
 from habitat.core.registry import registry
-from habitat.core.simulator import (
-    AgentState,
-    DepthSensor,
-    Observations,
-    RGBSensor,
-    SemanticSensor,
-    Sensor,
-    SensorSuite,
-    ShortestPathPoint,
-    Simulator,
-    VisualObservation,
-)
+from habitat.core.simulator import Observations
 from habitat.sims.habitat_simulator.habitat_simulator import HabitatSim
-from habitat.tasks.utils import cartesian_to_polar
-from habitat.utils.geometry_utils import get_heading_error, quat_to_rad
+from hz_dynamic_nav.utils.geometry_utils import get_heading_error, quat_to_rad
 from omegaconf import DictConfig
 
 
-@registry.register_simulator(name="DynamicNav")
+@registry.register_simulator(name="DynamicNavSim")
 class DynamicNavSim(HabitatSim):
     def __init__(self, config: DictConfig) -> None:
         super().__init__(config=config)
@@ -161,7 +146,7 @@ class DynamicNavSim(HabitatSim):
 class ShortestPathFollowerv2:
     def __init__(
         self,
-        sim: DynamicNavSim,
+        sim: iGibsonSocialNav,
         object_id,  # int for old Habitat, something else for new Habitat...
         waypoints: List[np.ndarray],
         lin_speed: float,
