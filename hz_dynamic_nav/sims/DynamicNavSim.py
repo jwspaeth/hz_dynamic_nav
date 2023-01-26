@@ -146,7 +146,7 @@ class DynamicNavSim(HabitatSim):
 class ShortestPathFollowerv2:
     def __init__(
         self,
-        sim: iGibsonSocialNav,
+        sim: DynamicNavSim,
         object_id,  # int for old Habitat, something else for new Habitat...
         waypoints: List[np.ndarray],
         lin_speed: float,
