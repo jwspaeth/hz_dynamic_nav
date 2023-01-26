@@ -10,7 +10,7 @@ from hz_dynamic_nav.utils.geometry_utils import get_heading_error, quat_to_rad
 from omegaconf import DictConfig
 
 
-@registry.register_simulator(name="DynamicNavSim")
+@registry.register_simulator(name="DynamicNav")
 class DynamicNavSim(HabitatSim):
     def __init__(self, config: DictConfig) -> None:
         super().__init__(config=config)
