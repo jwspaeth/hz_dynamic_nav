@@ -68,3 +68,9 @@
       ```
       python -u hz_dynamic_nav/run.py --run-type train --exp-config hz_dynamic_nav/config/dynamicnav/ddppo_dynamicnav.yaml
       ```
+
+   With habitat_baselines and moving obstacles:
+      ```
+      python -um hz_dynamic_nav.run --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml --run-type eval habitat_baselines.load_resume_state_config=False habitat_baselines.num_environments=1 habitat_baselines.eval_ckpt_path_dir=/coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth habitat_baselines.eval.video_option=["disk"] habitat_baselines.test_episode_count=10 habitat.task.type=DynamicNav habitat.simulator.type=DynamicNav habitat.simulator.NUM_PEOPLE=3 habitat.simulator.PEOPLE_LIN_SPEED=0.25 habitat.simulator.PEOPLE_ANG_SPEED=10 habitat.simulator.TIME_STEP=1.0
+      ```
+      
