@@ -112,7 +112,6 @@ class HumanCollision(Measure):
         super().__init__(*args, **kwargs)
         self._sim = sim
         self._config = config
-        self.uuid = "human_collision"
 
     def _get_uuid(self, *args: Any, **kwargs: Any) -> str:
         return "human_collision"
@@ -130,6 +129,6 @@ class HumanCollision(Measure):
             if distance < self._config.get("TERMINATION_RADIUS", 0.3):
                 self._metric = True
                 break
-        print("Collision: ", self._metric)
+
         if self._metric:
             task.is_stop_called = True
