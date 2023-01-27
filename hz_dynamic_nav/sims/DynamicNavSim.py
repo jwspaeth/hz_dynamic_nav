@@ -19,7 +19,6 @@ class DynamicNavSim(HabitatSim):
         self.people_template_ids = obj_templates_mgr.load_configs(
             "/nethome/jspaeth7/home-flash/workspaces/habitat-lab/habitat-baselines/data/person_meshes"
         )
-        print("People template ids: ", self.people_template_ids)
         self.person_ids = []
         self.people_mask = config.get("PEOPLE_MASK", False)
         self.num_people = config.get("NUM_PEOPLE", 1)
@@ -188,9 +187,6 @@ class ShortestPathFollowerv2:
         the next waypoint).
         :return:
         """
-        print(
-            f"Person {self.person_reference.object_id} translation: {self.person_reference.translation}"
-        )
         # If waypoint_idx exceeds max length, wrap around
         waypoint_idx = self.next_waypoint_idx % len(self.waypoints)
 
