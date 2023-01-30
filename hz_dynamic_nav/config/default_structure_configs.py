@@ -13,16 +13,6 @@ cs = ConfigStore.instance()
 class DynamicNavSimulatorConfig(SimulatorConfig):
     type: str = "DynamicNav"
     PEOPLE_MASK: bool = False
-    NUM_PEOPLE: int = 0
-    PEOPLE_LIN_SPEED: float = 0.0
-    PEOPLE_ANG_SPEED: float = 0.0
-    TIME_STEP: float = 0.0
-
-
-@dataclass
-class DynamicNavSimulatorConfig(SimulatorConfig):
-    type: str = "DynamicNav"
-    PEOPLE_MASK: bool = False
     NUM_PEOPLE: int = 3
     PEOPLE_LIN_SPEED: float = 0.25
     PEOPLE_ANG_SPEED: float = 10
