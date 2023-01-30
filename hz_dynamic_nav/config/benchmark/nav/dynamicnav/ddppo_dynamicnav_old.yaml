@@ -14,10 +14,10 @@ habitat_baselines:
   num_environments: 1
   trainer_name: ver
   eval_ckpt_path_dir: /coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth
-  tensorboard_dir: /nethome/jspaeth7/home-flash/workspaces/hz_dynamic_nav/slurm/${name}/tb/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  checkpoint_folder: /nethome/jspaeth7/home-flash/workspaces/hz_dynamic_nav/slurm/${name}/ckpts/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  log_file: /nethome/jspaeth7/home-flash/workspaces/hz_dynamic_nav/slurm/${name}/train.log
-  video_dir: /nethome/jspaeth7/home-flash/workspaces/hz_dynamic_nav/slurm/${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}/video_dir
+  tensorboard_dir: /nethome/jspaeth7/home-flash/workspaces/habitat/slurm/${name}/tb/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  checkpoint_folder: /nethome/jspaeth7/home-flash/workspaces/habitat/slurm/${name}/ckpts/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  log_file: /nethome/jspaeth7/home-flash/workspaces/habitat/slurm/${name}/train.log
+  video_dir: /nethome/jspaeth7/home-flash/workspaces/habitat/slurm/${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}/video_dir
   test_episode_count: 4
   load_resume_state_config: True
   eval:
@@ -25,8 +25,8 @@ habitat_baselines:
      should_load_ckpt: True
   rl:
     ddppo:
-      # pretrained_weights: hz_dynamic_nav/data/saved_weights/gibson-rgbd-best.pth
-      # pretrained_weights: hz_dynamic_nav/data/saved_weights/gibson-2plus-resnet50.pth
+      # pretrained_weights: habitat/data/saved_weights/gibson-rgbd-best.pth
+      # pretrained_weights: habitat/data/saved_weights/gibson-2plus-resnet50.pth
       # pretrained_weights: /coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth
       # Initialize with pretrained weights
       pretrained: False

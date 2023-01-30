@@ -1,27 +1,13 @@
 import math
-import random
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import habitat_sim
 import magnum as mn
 import numpy as np
-import quaternion
 from habitat.core.registry import registry
-from habitat.core.simulator import (
-    AgentState,
-    DepthSensor,
-    Observations,
-    RGBSensor,
-    SemanticSensor,
-    Sensor,
-    SensorSuite,
-    ShortestPathPoint,
-    Simulator,
-    VisualObservation,
-)
+from habitat.core.simulator import Observations
 from habitat.sims.habitat_simulator.habitat_simulator import HabitatSim
-from habitat.tasks.utils import cartesian_to_polar
-from habitat.utils.geometry_utils import get_heading_error, quat_to_rad
+from hz_dynamic_nav.utils.geometry_utils import get_heading_error, quat_to_rad
 from omegaconf import DictConfig
 
 
@@ -31,7 +17,7 @@ class DynamicNavSim(HabitatSim):
         super().__init__(config=config)
         obj_templates_mgr = self.get_object_template_manager()
         self.people_template_ids = obj_templates_mgr.load_configs(
-            "/private/home/naokiyokoyama/gc/datasets/person_meshes"
+            "/nethome/jspaeth7/home-flash/workspaces/habitat-lab/habitat-baselines/data/person_meshes"
         )
         self.person_ids = []
         self.people_mask = config.get("PEOPLE_MASK", False)
@@ -47,20 +33,23 @@ class DynamicNavSim(HabitatSim):
 
     def reset_people(self):
         agent_position = self.get_agent_state().position
-
+        rigid_object_manager = self.get_rigid_object_manager()
         # Check if humans have been erased (sim was reset)
-        if not self.get_existing_object_ids():
-            self.person_ids = []
+        if rigid_object_manager.get_num_objects() == 0:
+            self.person_references = []
             for _ in range(self.num_people):
                 for person_template_id in self.people_template_ids:
-                    self.person_ids.append(self.add_object(person_template_id))
+                    person_reference = rigid_object_manager.add_object_by_template_id(
+                        person_template_id
+                    )
+                    self.person_references.append(person_reference)
 
         # Spawn humans
         min_path_dist = 3
         max_level = 0.6
         agent_x, agent_y, agent_z = self.get_agent_state(0).position
         self.people = []
-        for person_id in self.person_ids:
+        for person_reference in self.person_references:
             valid_walk = False
             while not valid_walk:
                 start = np.array(self.sample_navigable_point())
@@ -89,20 +78,19 @@ class DynamicNavSim(HabitatSim):
                 )
                 if not valid_distance:
                     min_path_dist *= 0.95
-
             waypoints = sp.points
             heading = np.random.rand() * 2 * np.pi - np.pi
             rotation = np.quaternion(np.cos(heading), 0, np.sin(heading), 0)
             rotation = np.normalized(rotation)
             rotation = mn.Quaternion(rotation.imag, rotation.real)
-            self.set_translation([start[0], start[1] + 0.9, start[2]], person_id)
-            self.set_rotation(rotation, person_id)
-            self.set_object_motion_type(
-                habitat_sim.physics.MotionType.KINEMATIC, person_id
+            person_reference.translation = mn.Vector3(
+                start[0], start[1] + 0.9, start[2]
             )
+            person_reference.rotation = rotation
+            person_reference.motion_type = habitat_sim.physics.MotionType.KINEMATIC
             spf = ShortestPathFollowerv2(
                 sim=self,
-                object_id=person_id,
+                person_reference=person_reference,
                 waypoints=waypoints,
                 lin_speed=self.lin_speed,
                 ang_speed=self.ang_speed,
@@ -133,10 +121,10 @@ class DynamicNavSim(HabitatSim):
         """
         # 'Remove' people
         all_pos = []
-        for person_id in self.get_existing_object_ids():
-            pos = self.get_translation(person_id)
-            all_pos.append(pos)
-            self.set_translation([pos[0], pos[1] + 10, pos[2]], person_id)
+        for person_reference in self.person_references:
+            translation = person_reference.translation
+            all_pos.append(translation)
+            person_reference.translation[1] = translation[1] + 10
 
         # Refresh observations
         no_ppl_observations = super().get_observations_at(
@@ -152,8 +140,8 @@ class DynamicNavSim(HabitatSim):
         ] = 0
 
         # Put people back
-        for pos, person_id in zip(all_pos, self.get_existing_object_ids()):
-            self.set_translation(pos, person_id)
+        for pos, person_reference in zip(all_pos, self.person_references):
+            person_reference.translation = pos
 
         return observations
 
@@ -162,14 +150,14 @@ class ShortestPathFollowerv2:
     def __init__(
         self,
         sim: DynamicNavSim,
-        object_id,  # int for old Habitat, something else for new Habitat...
+        person_reference,  # int for old Habitat, something else for new Habitat...
         waypoints: List[np.ndarray],
         lin_speed: float,
         ang_speed: float,
         time_step: float,
     ):
         self._sim = sim
-        self.object_id = object_id
+        self.person_reference = person_reference
 
         self.vel_control = habitat_sim.physics.VelocityControl()
         self.vel_control.controlling_lin_vel = True
@@ -203,8 +191,8 @@ class ShortestPathFollowerv2:
         waypoint_idx = self.next_waypoint_idx % len(self.waypoints)
 
         waypoint = np.array(self.waypoints[waypoint_idx])
-        translation = self._sim.get_translation(self.object_id)
-        magnum_quaternion = self._sim.get_rotation(self.object_id)
+        translation = self.person_reference.translation
+        magnum_quaternion = self.person_reference.rotation
 
         # Face the next waypoint if we aren't already facing it
         if not self.done_turning:
@@ -260,6 +248,6 @@ class ShortestPathFollowerv2:
         rigid_state = habitat_sim.bindings.RigidState(magnum_quaternion, translation)
         rigid_state = self.vel_control.integrate_transform(self.time_step, rigid_state)
 
-        self._sim.set_translation(rigid_state.translation, self.object_id)
-        self._sim.set_rotation(rigid_state.rotation, self.object_id)
+        self.person_reference.translation = rigid_state.translation
+        self.person_reference.rotation = rigid_state.rotation
         self.current_position = rigid_state.translation
