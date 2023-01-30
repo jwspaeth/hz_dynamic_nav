@@ -1,0 +1,6 @@
+# @package _global_
+
+defaults:
+  - /pointnav: ddppo_pointnav
+  - /habitat/simulator: dynamic_nav_sim_config_base
+  - override /habitat/task: dynamicnav

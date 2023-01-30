@@ -5,8 +5,8 @@
 1. **Prepare conda env**.
    ```bash
    # We require python>=3.7 and cmake>=3.10
-   conda create -n hz_dynamic_nav python=3.7 cmake=3.14.0
-   conda activate hz_dynamic_nav
+   conda create -n habitat python=3.7 cmake=3.14.0
+   conda activate habitat
    ```
    
 1. **Install pytorch and cuda**.

@@ -1,0 +1,10 @@
+defaults:
+  - pointnav
+  - measurements:
+    - distance_to_goal
+    - success
+    - spl
+    - distance_to_goal_reward
+  - _self_
+
+type: DynamicNav
