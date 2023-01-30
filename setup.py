@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name="hz_dynamic_nav
+    name="hz_dynamic_nav",
     version="0.1",
     author="Will Spaeth",
     author_email="willspaeth@github",
