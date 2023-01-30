@@ -44,15 +44,9 @@
       
 1. **Download data**
 
-   WIP
+   Download data as required by habitat-lab and habitat-baselines. This data should be in /hz_dynamic_nav/data. If data is downloaded directly into habitat-lab or habitat-baselines, consider simlinking to /hz_dynamic_nav/data.
    
 ## Running eval
-
-1. **Run in habitat-baselines**:
-   
-      ```
-      python -um hz_dynamic_nav.run --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml --run-type eval habitat_baselines.load_resume_state_config=False habitat_baselines.num_environments=1 habitat_baselines.eval_ckpt_path_dir=/coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth habitat_baselines.eval.video_option=["disk"] habitat_baselines.test_episode_count=10 habitat.task.type=DynamicNav habitat.simulator.type=DynamicNav habitat.simulator.NUM_PEOPLE=3 habitat.simulator.PEOPLE_LIN_SPEED=0.25 habitat.simulator.PEOPLE_ANG_SPEED=10 habitat.simulator.TIME_STEP=1.0
-      ```
       
 1. **Run in hz_dynamic_nav**:
  
