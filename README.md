@@ -46,34 +46,16 @@
 
    WIP
    
-## Running
+## Running eval
 
 1. **Run in habitat-baselines**:
    
       ```
-      python -u habitat_baselines/run.py --run-type train --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver habitat_baselines.num_environments=1
+      python -um hz_dynamic_nav.run --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml --run-type eval habitat_baselines.load_resume_state_config=False habitat_baselines.num_environments=1 habitat_baselines.eval_ckpt_path_dir=/coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth habitat_baselines.eval.video_option=["disk"] habitat_baselines.test_episode_count=10 habitat.task.type=DynamicNav habitat.simulator.type=DynamicNav habitat.simulator.NUM_PEOPLE=3 habitat.simulator.PEOPLE_LIN_SPEED=0.25 habitat.simulator.PEOPLE_ANG_SPEED=10 habitat.simulator.TIME_STEP=1.0
       ```
       
 1. **Run in hz_dynamic_nav**:
-
-   $HZ_HABBASE is the environment variable pointing to the absolute path of habitat-lab/habitat-baselines.
  
-   Baseline:
       ```
-      python -u hz_dynamic_nav/run.py --run-type train --exp-config $HZ_HABBASE/habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver habitat_baselines.num_environments=1
-      ```
-
-   With custom task:
-      ```
-      python -u hz_dynamic_nav/run.py --run-type train --exp-config $HZ_HABBASE/habitat_baselines/config/pointnav/ddppo_pointnav.yaml benchmark/nav/pointnav=pointnav_hm3d habitat_baselines.trainer_name=ver habitat_baselines.num_environments=1 habitat.task.type=TestNav
-      ```
-      
-   With hz_dynamic_nav config:
-      ```
-      python -u hz_dynamic_nav/run.py --run-type train --exp-config hz_dynamic_nav/config/dynamicnav/ddppo_dynamicnav.yaml
-      ```
-
-   Running obstacle collision code:
-      ```
-      python -um hz_dynamic_nav.run --exp-config habitat_baselines/config/pointnav/ddppo_pointnav.yaml --run-type eval habitat_baselines.load_resume_state_config=False habitat_baselines.num_environments=1 habitat_baselines.eval_ckpt_path_dir=/coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth habitat_baselines.eval.video_option=["disk"] habitat_baselines.test_episode_count=10 habitat.task.type=DynamicNav habitat.simulator.type=DynamicNav habitat.simulator.NUM_PEOPLE=3 habitat.simulator.PEOPLE_LIN_SPEED=0.25 habitat.simulator.PEOPLE_ANG_SPEED=10 habitat.simulator.TIME_STEP=1.0
+      python -um hz_dynamic_nav.run --exp-config hz_dynamic_nav/config/benchmark/nav/dynamicnav/ddppo_dynamicnav.yaml --run-type eval habitat_baselines.load_resume_state_config=False habitat_baselines.num_environments=1 habitat_baselines.eval_ckpt_path_dir=/coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth habitat_baselines.eval.video_option=["disk"] habitat_baselines.test_episode_count=10
       ```
