@@ -42,6 +42,9 @@
       pip install -e habitat-baselines  # install habitat_baselines
       ```
       
+1. **Download data**
+   WIP
+   
 ## Running
 
 1. **Run in habitat-baselines**:
