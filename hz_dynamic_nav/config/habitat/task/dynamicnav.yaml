@@ -1,10 +1,24 @@
 defaults:
   - pointnav
   - measurements:
-    - distance_to_goal
-    - success
-    - spl
-    - distance_to_goal_reward
+    - human_collision
+  #- override /habitat/simulator/agents@habitat.simulator.agents.main_agent: depth_agent
+  - override actions:
+    - kinematic_velocity_control
   - _self_
 
 type: DynamicNav
+
+#habitat:
+#  environment:
+#    max_episode_steps: 500
+#  simulator:
+#    agents:
+#      main_agent:
+#        sim_sensors:
+#          rgb_sensor:
+#            width: 256
+#            height: 256
+#          depth_sensor:
+#            width: 256
+#            height: 256

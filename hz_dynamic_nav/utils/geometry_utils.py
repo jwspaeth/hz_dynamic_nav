@@ -24,3 +24,10 @@ def quat_to_rad(rotation):
     phi = np.arctan2(heading_vector[0], -heading_vector[2])
 
     return phi
+
+
+## Naoki's new version
+# def quat_to_rad(rotation):
+#     heading_vector = quaternion_rotate_vector(rotation.inverse(), np.array([0, 0, -1]))
+#     phi = cartesian_to_polar(-heading_vector[2], heading_vector[0])[1]
+#     return phi
