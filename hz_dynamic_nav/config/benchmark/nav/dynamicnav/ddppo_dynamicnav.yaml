@@ -3,7 +3,19 @@
 defaults:
   - /pointnav: ddppo_pointnav
   - /habitat/simulator: dynamic_nav_sim_config_base
+  - override /benchmark/nav/pointnav: pointnav_gibson_patched
+  - override /habitat/simulator/agents@habitat.simulator.agents.main_agent: depth_agent
   - override /habitat/task: dynamicnav
+  - _self_
+
+habitat:
+  simulator:
+    agents:
+      main_agent:
+        sim_sensors:
+          depth_sensor:
+            width: 256
+            height: 256
 
 habitat_baselines:
   rl:

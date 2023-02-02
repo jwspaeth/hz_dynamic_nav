@@ -1,0 +1,10 @@
+# @package _global_
+
+defaults:
+  - pointnav_base
+  - /habitat/dataset/pointnav: gibson
+  - _self_
+
+habitat:
+  environment:
+    max_episode_steps: 500
