@@ -46,7 +46,7 @@
 
    Download data as required by habitat-lab and habitat-baselines. This data should be in /hz_dynamic_nav/data. If data is downloaded directly into habitat-lab or habitat-baselines, consider simlinking to /hz_dynamic_nav/data.
    
-## Running eval
+## Running
 
 1. **Train in hz_dynamic_nav (1 env)**:
    
