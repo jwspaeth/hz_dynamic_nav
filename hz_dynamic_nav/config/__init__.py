@@ -1,1 +1,1 @@
-from .default_structure_configs import DynamicNavSimulatorConfig
+from .default_structured_configs import DynamicNavSimulatorConfig

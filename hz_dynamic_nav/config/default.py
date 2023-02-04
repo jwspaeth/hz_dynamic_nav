@@ -1,6 +1,6 @@
 from habitat.config.default_structured_configs import register_hydra_plugin
 from habitat_baselines.config.default import get_config as _habitat_baselines_get_config
-from hz_dynamic_nav.config.default_structure_configs import HzDynamicNavConfigPlugin
+from hz_dynamic_nav.config.default_structured_configs import HzDynamicNavConfigPlugin
 from omegaconf import DictConfig, OmegaConf
 
 
