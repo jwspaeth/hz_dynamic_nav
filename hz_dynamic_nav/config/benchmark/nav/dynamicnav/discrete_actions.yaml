@@ -1,0 +1,14 @@
+# @package _global_
+
+defaults:
+  - override /habitat/task/actions:
+    - stop
+    - move_forward
+    - turn_left
+    - turn_right
+  - _self_
+
+habitat_baselines:
+  rl:
+    policy:
+      action_distribution_type: "categorical"

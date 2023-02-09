@@ -3,6 +3,9 @@
 defaults:
   - /pointnav: ddppo_pointnav
   - /habitat/simulator: dynamic_nav_sim_config_base
+  - /habitat/logging: wandb
+  - /benchmark/nav/dynamicnav: discrete_actions
+  - override /benchmark/nav/pointnav: pointnav_hm3d
   - override /habitat/simulator/agents@habitat.simulator.agents.main_agent: depth_agent
   - override /habitat/task: dynamicnav
   - _self_
@@ -18,6 +21,3 @@ habitat:
 
 habitat_baselines:
   trainer_name: ver
-  rl:
-    policy:
-      action_distribution_type: "gaussian"

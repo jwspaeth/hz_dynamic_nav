@@ -1,0 +1,9 @@
+# @package _global_
+
+defaults:
+  - _self_
+
+habitat_baselines:
+  rl:
+    policy:
+      action_distribution_type: "gaussian"
