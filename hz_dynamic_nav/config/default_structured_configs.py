@@ -29,6 +29,10 @@ class VelocityControlActionConfig(ActionConfig):
     lin_vel_range: List[float] = field(default_factory=lambda: [0.0, 0.25])
     # deg/sec:
     ang_vel_range: List[float] = field(default_factory=lambda: [-10.0, 10.0])
+    # # meters/sec:
+    # lin_vel_range: List[float] = field(default_factory=lambda: [1.0, 1.0])
+    # # deg/sec:
+    # ang_vel_range: List[float] = field(default_factory=lambda: [1.0, 1.0])
     min_abs_lin_speed: float = 0.025  # meters/sec
     min_abs_ang_speed: float = 1.0  # deg/sec
     time_step: float = 1.0  # seconds
@@ -48,6 +52,7 @@ class HumanCollisionMeasurementConfig(MeasurementConfig):
 class CollisionPenaltyMeasurementConfig(MeasurementConfig):
     type: str = CollisionPenalty.__name__
     collision_penalty: float = 0.003
+    # collision_penalty: float = 1.0
 
 
 @dataclass
