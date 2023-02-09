@@ -20,16 +20,15 @@ class DynamicNavSim(HabitatSim):
             "/nethome/jspaeth7/home-flash/workspaces/habitat-lab/habitat-baselines/data/person_meshes"
         )
         self.person_ids = []
-        self.people_mask = config.get("PEOPLE_MASK", False)
-        self.num_people = config.get("NUM_PEOPLE", 1)
         self.social_nav = True
         self.interactive_nav = False
 
         # People params
-        self.people_mask = config.get("PEOPLE_MASK", False)
-        self.lin_speed = config.PEOPLE_LIN_SPEED
-        self.ang_speed = np.deg2rad(config.PEOPLE_ANG_SPEED)
-        self.time_step = config.TIME_STEP
+        self.people_mask = config.get("people_mask", False)
+        self.num_people = config.get("num_people", 1)
+        self.lin_speed = config.people_lin_speed
+        self.ang_speed = np.deg2rad(config.people_ang_speed)
+        self.time_step = config.time_step
 
     def reset_people(self):
         agent_position = self.get_agent_state().position

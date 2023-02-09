@@ -1,4 +1,3 @@
-import math
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple
 
@@ -8,7 +7,7 @@ from habitat.config.default_structured_configs import (
     SimulatorConfig,
 )
 from hydra.core.config_store import ConfigStore
-from omegaconf import II, MISSING
+from hz_dynamic_nav.measurements import CollisionPenalty, SumReward
 
 cs = ConfigStore.instance()
 
@@ -16,11 +15,11 @@ cs = ConfigStore.instance()
 @dataclass
 class DynamicNavSimulatorConfig(SimulatorConfig):
     type: str = "DynamicNav"
-    PEOPLE_MASK: bool = False
-    NUM_PEOPLE: int = 3
-    PEOPLE_LIN_SPEED: float = 0.25
-    PEOPLE_ANG_SPEED: float = 10
-    TIME_STEP: float = 1.0
+    people_mask: bool = False
+    num_people: int = 3
+    people_lin_speed: float = 0.25
+    people_ang_speed: float = 10
+    time_step: float = 1.0
 
 
 @dataclass
@@ -43,6 +42,25 @@ class CollisionsMeasurementConfig(MeasurementConfig):
 @dataclass
 class HumanCollisionMeasurementConfig(MeasurementConfig):
     type: str = "HumanCollision"
+
+
+@dataclass
+class CollisionPenaltyMeasurementConfig(MeasurementConfig):
+    type: str = CollisionPenalty.__name__
+    collision_penalty: float = 0.003
+
+
+@dataclass
+class SumRewardMeasurementConfig(MeasurementConfig):
+    type: str = SumReward.__name__
+    reward_terms: List[str] = field(
+        # available options are "disk" and "tensorboard"
+        default_factory=list
+    )
+    reward_coefficients: List[str] = field(
+        # available options are "disk" and "tensorboard"
+        default_factory=list
+    )
 
 
 cs.store(
@@ -71,6 +89,20 @@ cs.store(
     group="habitat/task/measurements",
     name="human_collision",
     node=HumanCollisionMeasurementConfig,
+)
+
+cs.store(
+    package=f"habitat.task.measurements.{CollisionPenalty.cls_uuid}",
+    group="habitat/task/measurements",
+    name=f"{CollisionPenalty.cls_uuid}",
+    node=CollisionPenaltyMeasurementConfig,
+)
+
+cs.store(
+    package=f"habitat.task.measurements.{SumReward.cls_uuid}",
+    group="habitat/task/measurements",
+    name=f"{SumReward.cls_uuid}",
+    node=SumRewardMeasurementConfig,
 )
 
 from hydra.core.config_search_path import ConfigSearchPath

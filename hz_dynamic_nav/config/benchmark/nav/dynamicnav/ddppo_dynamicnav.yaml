@@ -17,6 +17,7 @@ habitat:
             height: 256
 
 habitat_baselines:
+  trainer_name: ver
   rl:
     policy:
       action_distribution_type: "gaussian"
