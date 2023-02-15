@@ -2,6 +2,6 @@
 
 habitat_baselines:
   wb:
-    project_name: dynamic_nav
+    project_name: dynamic_navigation
     entity: jwspaeth
     run_name: test_run
