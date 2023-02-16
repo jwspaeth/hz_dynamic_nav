@@ -22,3 +22,5 @@ habitat:
 
 habitat_baselines:
   trainer_name: ver
+  eval:
+    video_option: ["disk"]
