@@ -78,7 +78,7 @@ cs.store(
 cs.store(
     package="habitat.task.actions.velocity_control",
     group="habitat/task/actions",
-    name="kinematic_velocity_control",
+    name="velocity_control",
     node=VelocityControlActionConfig,
 )
 
@@ -97,16 +97,16 @@ cs.store(
 )
 
 cs.store(
-    package=f"habitat.task.measurements.{CollisionPenalty.cls_uuid}",
+    package="habitat.task.measurements.collision_penalty",
     group="habitat/task/measurements",
-    name=f"{CollisionPenalty.cls_uuid}",
+    name="collision_penalty",
     node=CollisionPenaltyMeasurementConfig,
 )
 
 cs.store(
-    package=f"habitat.task.measurements.{SumReward.cls_uuid}",
+    package=f"habitat.task.measurements.sum_reward",
     group="habitat/task/measurements",
-    name=f"{SumReward.cls_uuid}",
+    name="sum_reward",
     node=SumRewardMeasurementConfig,
 )
 

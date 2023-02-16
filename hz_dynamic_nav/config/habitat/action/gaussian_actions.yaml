@@ -1,6 +1,8 @@
 # @package _global_
 
 defaults:
+  - override /habitat/task/actions:
+    - velocity_control
   - _self_
 
 habitat_baselines:
