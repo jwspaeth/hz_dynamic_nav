@@ -1,6 +1,7 @@
 # @package _global_
 
 habitat_baselines:
+  writer_type: wb
   wb:
     project_name: dynamic_navigation
     entity: jwspaeth
