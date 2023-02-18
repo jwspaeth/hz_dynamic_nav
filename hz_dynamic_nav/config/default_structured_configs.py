@@ -50,9 +50,14 @@ class HumanCollisionMeasurementConfig(MeasurementConfig):
 
 @dataclass
 class CollisionPenaltyMeasurementConfig(MeasurementConfig):
-    type: str = CollisionPenalty.__name__
+    type: str = "CollisionPenalty"
     collision_penalty: float = 0.003
-    # collision_penalty: float = 1.0
+
+
+@dataclass
+class AccCollisionPenaltyMeasurementConfig(MeasurementConfig):
+    type: str = "AccCollisionPenalty"
+    collision_penalty: float = 0.003
 
 
 @dataclass
@@ -97,16 +102,23 @@ cs.store(
 )
 
 cs.store(
-    package=f"habitat.task.measurements.{CollisionPenalty.cls_uuid}",
+    package="habitat.task.measurements.collision_penalty",
     group="habitat/task/measurements",
-    name=f"{CollisionPenalty.cls_uuid}",
+    name="collision_penalty",
     node=CollisionPenaltyMeasurementConfig,
 )
 
 cs.store(
-    package=f"habitat.task.measurements.{SumReward.cls_uuid}",
+    package="habitat.task.measurements.acc_collision_penalty",
     group="habitat/task/measurements",
-    name=f"{SumReward.cls_uuid}",
+    name="acc_collision_penalty",
+    node=AccCollisionPenaltyMeasurementConfig,
+)
+
+cs.store(
+    package=f"habitat.task.measurements.sum_reward",
+    group="habitat/task/measurements",
+    name="sum_reward",
     node=SumRewardMeasurementConfig,
 )
 

@@ -2,17 +2,14 @@ defaults:
   - pointnav
   - measurements:
     - human_collision
-    # - collisions
-    # - collision_penalty
-    # - sum_reward
-  - override actions:
-    - kinematic_velocity_control
+    - collisions
+    - collision_penalty
+    - sum_reward
   - _self_
 
 type: DynamicNav
-# reward_measure: distance_to_goal_reward
-# reward_measure: sum_reward
-# measurements:
-#     sum_reward:
-#        reward_terms: ["distance_to_goal_reward", "collision_penalty"]
-#        reward_coefficients: [1.0, 1.0]
+reward_measure: sum_reward
+measurements:
+   sum_reward:
+      reward_terms: ["distance_to_goal_reward", "collision_penalty"]
+      reward_coefficients: [1.0, 1.0]
