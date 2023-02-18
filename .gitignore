@@ -2,7 +2,7 @@ slurm
 habitat-lab
 .idea
 .DS_Store
-video_dir
+*video_dir
 data
 tb
 

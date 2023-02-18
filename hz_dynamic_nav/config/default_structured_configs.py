@@ -39,11 +39,6 @@ class VelocityControlActionConfig(ActionConfig):
 
 
 @dataclass
-class CollisionsMeasurementConfig(MeasurementConfig):
-    type: str = "Collisions"
-
-
-@dataclass
 class HumanCollisionMeasurementConfig(MeasurementConfig):
     type: str = "HumanCollision"
 
@@ -83,15 +78,8 @@ cs.store(
 cs.store(
     package="habitat.task.actions.velocity_control",
     group="habitat/task/actions",
-    name="kinematic_velocity_control",
+    name="velocity_control",
     node=VelocityControlActionConfig,
-)
-
-cs.store(
-    package="habitat.task.measurements.collisions",
-    group="habitat/task/measurements",
-    name="collisions",
-    node=CollisionsMeasurementConfig,
 )
 
 cs.store(
