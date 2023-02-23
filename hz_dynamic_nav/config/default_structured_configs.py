@@ -16,7 +16,9 @@ cs = ConfigStore.instance()
 class DynamicNavSimulatorConfig(SimulatorConfig):
     type: str = "DynamicNav"
     people_mask: bool = False
-    num_people: int = 3
+    people_spawn_type: str = "density"
+    people_density: float = 0.5
+    people_num: int = 3
     people_lin_speed: float = 0.25
     people_ang_speed: float = 10
     time_step: float = 1.0
