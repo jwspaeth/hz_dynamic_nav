@@ -1,6 +1,8 @@
 import math
 from typing import List, Optional
 
+import cv2 as cv
+import habitat
 import habitat_sim
 import magnum as mn
 import numpy as np
@@ -24,24 +26,60 @@ class DynamicNavSim(HabitatSim):
         self.interactive_nav = False
 
         # People params
-        self.people_mask = config.get("people_mask", False)
-        self.num_people = config.get("num_people", 1)
+        self.people_mask = config.people_mask
+        self.people_spawn_type = config.people_spawn_type
+        self.people_density = config.people_density
+        self._people_num = config.people_num
         self.lin_speed = config.people_lin_speed
         self.ang_speed = np.deg2rad(config.people_ang_speed)
         self.time_step = config.time_step
+
+        assert self.people_spawn_type in ["density", "num"], "Invalid people spawn type"
+
+    @property
+    def people_num(self) -> int:
+        """
+        Get number of people to spawn based on spawn type.
+        Careful calling this if spawn type is density, as it will recalculate scene area every time,
+            which could be expensive.
+        :return:
+        """
+        map_resolution = 256
+        if self.people_spawn_type == "density":
+            # Get obstacle map of current level as np array. 0 occupied, 1 unoccupied.
+            topdown_map = habitat.utils.visualizations.maps.get_topdown_map_from_sim(
+                sim=self, map_resolution=map_resolution, draw_border=False
+            )
+
+            # Get area of unoccupied space in pixels, convert to meters
+            unoccupied_pixels = np.sum(topdown_map)  # Sum method
+            meters_per_pixel = (
+                habitat.utils.visualizations.maps.calculate_meters_per_pixel(
+                    map_resolution=map_resolution, sim=self
+                )
+            )
+            sq_meters_per_pixel = meters_per_pixel**2
+            sq_meters = unoccupied_pixels * sq_meters_per_pixel
+            people_spawn_num = int(self.people_density * sq_meters)
+            return people_spawn_num
+
+        else:
+            return self._people_num
 
     def reset_people(self):
         agent_position = self.get_agent_state().position
         rigid_object_manager = self.get_rigid_object_manager()
         # Check if humans have been erased (sim was reset)
         if rigid_object_manager.get_num_objects() == 0:
+
+            # Get number of people.
             self.person_references = []
-            for _ in range(self.num_people):
-                for person_template_id in self.people_template_ids:
-                    person_reference = rigid_object_manager.add_object_by_template_id(
-                        person_template_id
-                    )
-                    self.person_references.append(person_reference)
+            for _ in range(self.people_num):
+                person_template_id = self.people_template_ids[0]
+                person_reference = rigid_object_manager.add_object_by_template_id(
+                    person_template_id
+                )
+                self.person_references.append(person_reference)
 
         # Spawn humans
         min_path_dist = 3
