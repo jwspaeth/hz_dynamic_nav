@@ -4,7 +4,7 @@ defaults:
   - /pointnav: ddppo_pointnav
   - /habitat/simulator: dynamic_nav_sim_config_base
   - /habitat/logging: wandb
-  # - /habitat/action: gaussian_actions
+  - /habitat/action: discrete_actions
   - override /habitat/task: dynamicnav
   - override /benchmark/nav/pointnav: pointnav_gibson
   # - override /benchmark/nav/pointnav: pointnav_hm3d
