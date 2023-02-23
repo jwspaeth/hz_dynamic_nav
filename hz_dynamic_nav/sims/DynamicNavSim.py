@@ -26,14 +26,15 @@ class DynamicNavSim(HabitatSim):
         self.interactive_nav = False
 
         # People params
-        self.people_mask = config.get("people_mask", False)
-        self.people_spawn_type = config.get("people_spawn_type", "density")
-        self.people_density = config.get("people_density", 0.5)
-        self._people_num_cfg = config.get("people_num", 3)
-        self.map_resolution = config.get("map_resolution", 254)
+        self.people_mask = config.people_mask
+        self.people_spawn_type = config.people_spawn_type
+        self.people_density = config.people_density
+        self._people_num = config.people_num
         self.lin_speed = config.people_lin_speed
         self.ang_speed = np.deg2rad(config.people_ang_speed)
         self.time_step = config.time_step
+
+        assert self.people_spawn_type in ["density", "num"], "Invalid people spawn type"
 
     @property
     def people_num(self) -> int:
@@ -43,40 +44,27 @@ class DynamicNavSim(HabitatSim):
             which could be expensive.
         :return:
         """
+        map_resolution = 256
         if self.people_spawn_type == "density":
             # Get obstacle map of current level as np array. 0 occupied, 1 unoccupied.
             topdown_map = habitat.utils.visualizations.maps.get_topdown_map_from_sim(
-                sim=self, map_resolution=self.map_resolution, draw_border=False
-            )
-
-            # Draw contours around area of map that is unoccupied
-            contours, hierarchy = cv.findContours(
-                topdown_map, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
+                sim=self, map_resolution=map_resolution, draw_border=False
             )
 
             # Get area of unoccupied space in pixels, convert to meters
-            unoccupied_pixels_contour = cv.contourArea(contours[0])  # Contour method
             unoccupied_pixels = np.sum(topdown_map)  # Sum method
-            sq_meters_per_pixel = (
+            meters_per_pixel = (
                 habitat.utils.visualizations.maps.calculate_meters_per_pixel(
-                    map_resolution=self.map_resolution, sim=self
+                    map_resolution=map_resolution, sim=self
                 )
             )
-            sq_meters = unoccupied_pixels * sq_meters_per_pixel  # **2
+            sq_meters_per_pixel = meters_per_pixel**2
+            sq_meters = unoccupied_pixels * sq_meters_per_pixel
             people_spawn_num = int(self.people_density * sq_meters)
-            print(
-                f"topdown map total area: {topdown_map.shape[0] * topdown_map.shape[1]}"
-            )
-            print(f"topdown map sum: {np.sum(topdown_map)}")
-            print(f"pixel area contour: {unoccupied_pixels_contour}")
-            print(f"pixel area sum: {unoccupied_pixels}")
-            print(f"sq meters per pixel: {sq_meters_per_pixel}")
-            print(f"meters area: {sq_meters}")
-            print(f"people density: {self.people_density}")
-            print(f"people spawn num: {people_spawn_num}")
             return people_spawn_num
-        elif self.people_spawn_type == "num":
-            return self._people_num_cfg
+
+        else:
+            return self._people_num
 
     def reset_people(self):
         agent_position = self.get_agent_state().position

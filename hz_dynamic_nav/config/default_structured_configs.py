@@ -17,7 +17,7 @@ class DynamicNavSimulatorConfig(SimulatorConfig):
     type: str = "DynamicNav"
     people_mask: bool = False
     people_spawn_type: str = "density"
-    people_density: float = 0.5
+    people_density: float = 0.25
     people_num: int = 3
     people_lin_speed: float = 0.25
     people_ang_speed: float = 10
