@@ -25,10 +25,27 @@ class DynamicNavSimulatorConfig(SimulatorConfig):
 
 
 @dataclass
-class VelocityControlActionConfig(ActionConfig):
-    type: str = "VelocityAction"  # must be same name as class defined below!!
+class ContinuousVelocityControlActionConfig(ActionConfig):
+    type: str = "ContinuousVelocityAction"  # must be same name as class defined below!!
     # meters/sec:
     lin_vel_range: List[float] = field(default_factory=lambda: [0.0, 0.25])
+    # deg/sec:
+    ang_vel_range: List[float] = field(default_factory=lambda: [-10.0, 10.0])
+    min_abs_lin_speed: float = 0.025  # meters/sec
+    min_abs_ang_speed: float = 1.0  # deg/sec
+    time_step: float = 1.0  # seconds
+
+
+@dataclass
+class DiscreteVelocityControlActionConfig(ActionConfig):
+    type: str = "DiscreteVelocityAction"  # must be same name as class defined below!!
+    vel_tiling_scheme: str = "density"
+    lin_vel_tile_density: float = 0.025  # units / tile
+    ang_vel_tile_density: float = 0.25  # units / tile
+    lin_vel_num_tiles: int = 3
+    ang_vel_num_tiles: int = 3
+    # meters/sec:
+    lin_vel_range: List[float] = field(default_factory=lambda: [-0.25, 0.25])
     # deg/sec:
     ang_vel_range: List[float] = field(default_factory=lambda: [-10.0, 10.0])
     # # meters/sec:
@@ -78,10 +95,17 @@ cs.store(
 )
 
 cs.store(
-    package="habitat.task.actions.velocity_control",
+    package="habitat.task.actions.continuous_velocity_control",
     group="habitat/task/actions",
-    name="velocity_control",
-    node=VelocityControlActionConfig,
+    name="continuous_velocity_control",
+    node=ContinuousVelocityControlActionConfig,
+)
+
+cs.store(
+    package="habitat.task.actions.discrete_velocity_control",
+    group="habitat/task/actions",
+    name="discrete_velocity_control",
+    node=DiscreteVelocityControlActionConfig,
 )
 
 cs.store(

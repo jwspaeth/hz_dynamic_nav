@@ -1,0 +1,11 @@
+# @package _global_
+
+defaults:
+  - override /habitat/task/actions:
+    - discrete_velocity_control
+  - _self_
+
+habitat_baselines:
+  rl:
+    policy:
+      action_distribution_type: "categorical"
