@@ -149,13 +149,9 @@ class DiscreteVelocityAction(SimulatorTaskAction):
         r"""Moves the agent with a provided linear and angular velocity for the
         provided amount of time
 
-        Args: should be categorical now, but honestly don't know how this appears yet
-
         Args:
-            linear_velocity: between [-1,1], scaled according to
-                             config.lin_vel_range
-            angular_velocity: between [-1,1], scaled according to
-                             config.ang_vel_range
+            action: dict containing the discrete action id, which then maps to lin and ang velocities
+                with velocity_dict
         """
         action_id = action["action"]
         linear_velocity = self.velocity_dict[str(action_id)]["linear_velocity"]

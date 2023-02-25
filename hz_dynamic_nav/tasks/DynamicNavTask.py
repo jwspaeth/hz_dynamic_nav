@@ -30,7 +30,9 @@ class DynamicNavTask(NavigationTask):
         for p in self._sim.people:
             p.step()
 
-        observations = task_action.step(action, **action["action_args"], task=self)
+        observations = task_action.step(
+            action=action, **action["action_args"], task=self
+        )
         observations.update(
             self.sensor_suite.get_observations(
                 observations=observations,
