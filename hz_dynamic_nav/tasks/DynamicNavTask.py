@@ -15,7 +15,6 @@ class DynamicNavTask(NavigationTask):
         super().__init__(*args, **kwargs)
 
         # Unpack recursive actions
-        print("INITIAL TASK ACTIONS: ", self.actions)
         for key, value in self.actions.items():
             if isinstance(value, RecursiveSimulatorTaskAction):
                 self.actions.pop(key, None)
@@ -23,7 +22,6 @@ class DynamicNavTask(NavigationTask):
                     self.actions[k] = v
 
         self._action_keys = list(self.actions.keys())
-        print("AFTER TASK ACTIONS: ", self.actions)
 
     def reset(self, episode: Episode):
         self._sim.reset_people()
@@ -36,7 +34,6 @@ class DynamicNavTask(NavigationTask):
             action["action_args"] = {}
         action_name = action["action"]
         if isinstance(action_name, (int, np.integer)):
-            print("ACTION NAME", action_name)
             action_name = self.get_action_name(action_name)
         assert (
             action_name in self.actions
