@@ -2,7 +2,7 @@
 
 defaults:
   - override /habitat/task/actions:
-    - velocity_control
+    - continuous_velocity_control
   - _self_
 
 habitat_baselines:
