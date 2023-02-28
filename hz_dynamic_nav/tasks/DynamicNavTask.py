@@ -1,13 +1,30 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import (TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple,
+                    Union)
 
 import numpy as np
 from habitat.core.dataset import Episode
 from habitat.core.registry import registry
+from habitat.core.spaces import ActionSpace, Space
 from habitat.tasks.nav.nav import NavigationEpisode, NavigationTask
+from hz_dynamic_nav.actions import RecursiveSimulatorTaskAction
 
 
 @registry.register_task(name="DynamicNav")
 class DynamicNavTask(NavigationTask):
+    def __init__(self, *args: Any, **kwargs: Any):
+        super().__init__(*args, **kwargs)
+
+        # Unpack recursive actions
+        print("INITIAL TASK ACTIONS: ", self.actions)
+        for key, value in self.actions.items():
+            if isinstance(value, RecursiveSimulatorTaskAction):
+                self.actions.pop(key, None)
+                for k, v in value.action_space.items():
+                    self.actions[k] = v
+
+        self._action_keys = list(self.actions.keys())
+        print("AFTER TASK ACTIONS: ", self.actions)
+
     def reset(self, episode: Episode):
         self._sim.reset_people()
         episode.people_paths = [p.waypoints for p in self._sim.people]
@@ -19,6 +36,7 @@ class DynamicNavTask(NavigationTask):
             action["action_args"] = {}
         action_name = action["action"]
         if isinstance(action_name, (int, np.integer)):
+            print("ACTION NAME", action_name)
             action_name = self.get_action_name(action_name)
         assert (
             action_name in self.actions
@@ -30,9 +48,7 @@ class DynamicNavTask(NavigationTask):
         for p in self._sim.people:
             p.step()
 
-        observations = task_action.step(
-            action=action, **action["action_args"], task=self
-        )
+        observations = task_action.step(**action["action_args"], task=self)
         observations.update(
             self.sensor_suite.get_observations(
                 observations=observations,
@@ -47,3 +63,17 @@ class DynamicNavTask(NavigationTask):
         )
 
         return observations
+
+    @property
+    def action_space(self) -> Space:
+        """
+        Hack to fix embodied_task without editing it directly
+        :return:
+        """
+
+        return ActionSpace(
+            {
+                action_name: action_instance.action_space
+                for action_name, action_instance in self.actions.items()
+            }
+        )

@@ -2,7 +2,7 @@
 
 defaults:
   - override /habitat/task/actions:
-    - discrete_velocity_control
+    - discrete_velocity_multi_action
   - _self_
 
 habitat_baselines:

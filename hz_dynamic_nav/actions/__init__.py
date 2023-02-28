@@ -1,2 +1,6 @@
 from .ContinuousVelocityAction import ContinuousVelocityAction
-from .DiscreteVelocityAction import DiscreteVelocityAction
+from .DiscreteVelocityAction import (
+    DiscreteVelocitySingleAction,
+    DiscreteVelocityMultiAction,
+)
+from .RecursiveSimulatorTaskAction import RecursiveSimulatorTaskAction
