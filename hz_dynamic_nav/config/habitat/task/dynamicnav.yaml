@@ -7,6 +7,8 @@ defaults:
     - collisions
     - collision_penalty
     - sum_reward
+  - lab_sensors:
+    - time_sensor
   - _self_
 
 type: DynamicNav

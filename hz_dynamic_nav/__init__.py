@@ -1,1 +1,1 @@
-from . import actions, config, measurements, sims, tasks, utils
+from . import actions, config, measurements, sensors, sims, tasks, utils

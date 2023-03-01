@@ -3,11 +3,12 @@ from typing import Any, Dict, List, Tuple
 
 from habitat.config.default_structured_configs import (
     ActionConfig,
+    LabSensorConfig,
     MeasurementConfig,
     SimulatorConfig,
 )
 from hydra.core.config_store import ConfigStore
-from hz_dynamic_nav.measurements import CollisionPenalty, SumReward
+from hz_dynamic_nav.measurements import SumReward
 
 cs = ConfigStore.instance()
 
@@ -22,6 +23,11 @@ class DynamicNavSimulatorConfig(SimulatorConfig):
     people_lin_speed: float = 0.25
     people_ang_speed: float = 10
     time_step: float = 1.0
+
+
+@dataclass
+class TimeSensorConfig(LabSensorConfig):
+    type: str = "TimeSensor"
 
 
 @dataclass
@@ -94,6 +100,13 @@ cs.store(
     group="habitat/simulator",
     name="dynamic_nav_sim_config_base",
     node=DynamicNavSimulatorConfig,
+)
+
+cs.store(
+    package="habitat.task.lab_sensors.time_sensor",
+    group="habitat/task/lab_sensors",
+    name="time_sensor",
+    node=TimeSensorConfig,
 )
 
 cs.store(
