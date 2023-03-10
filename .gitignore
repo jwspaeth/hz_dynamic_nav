@@ -5,6 +5,7 @@ habitat-lab
 *video_dir
 data
 tb
+experiments
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
