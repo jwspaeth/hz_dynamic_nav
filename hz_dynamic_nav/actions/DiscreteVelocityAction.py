@@ -9,7 +9,7 @@ from habitat.core.registry import registry
 from habitat.core.simulator import ActionSpaceConfiguration
 from habitat.core.spaces import ActionSpace, EmptySpace
 from habitat.sims.habitat_simulator.actions import HabitatSimActions
-from habitat.tasks.nav.nav import NavigationEpisode
+from habitat.tasks.nav.nav import NavigationEpisode, StopAction
 from habitat_sim import RigidState
 from habitat_sim._ext.habitat_sim_bindings import VelocityControl
 from hz_dynamic_nav.actions.RecursiveSimulatorTaskAction import (
@@ -55,12 +55,13 @@ class DiscreteVelocitySingleAction(SimulatorTaskAction):
                 with velocity_dict
         """
         final_pos, final_rot, backwards, collided, task.is_stop_called = self.teleport()
-        self.update_metrics(collided, backwards)
-        return self._sim.get_observations_at(
+        agent_observations = self._sim.get_observations_at(
             position=final_pos,
             rotation=final_rot,
             keep_agent_at_new_pose=not (collided or task.is_stop_called),
         )
+        self.update_metrics(collided, backwards)
+        return agent_observations
 
     def update_metrics(self, collided, backwards_motion):
         self._sim._prev_sim_obs["collided"] = collided
@@ -91,10 +92,11 @@ class DiscreteVelocitySingleAction(SimulatorTaskAction):
             goal_rigid_state = self.vel_control.integrate_transform(
                 self.time_step, current_rigid_state
             )
-            final_position, final_rotation = self.get_next_pos_rot(goal_rigid_state)
+            final_position, final_rotation, collided = self.get_next_pos_rot(
+                goal_rigid_state
+            )
             # negative linear velocity is forward
             backwards = self.linear_velocity > 0.0
-            collided = final_position is None
 
         return final_position, final_rotation, backwards, collided, stop
 
@@ -133,8 +135,9 @@ class DiscreteVelocitySingleAction(SimulatorTaskAction):
         # filter.
         EPS = 1e-5
         collided = (dist_moved_after_filter + EPS) < dist_moved_before_filter
+        collided = collided or final_position is None
 
-        return final_position, final_rotation
+        return final_position, final_rotation, collided
 
 
 @registry.register_task_action
@@ -224,5 +227,12 @@ class DiscreteVelocityMultiAction(RecursiveSimulatorTaskAction):
                     *self.args,
                     **self.kwargs,
                 )
+        action_space_dict["lin0_ang0"] = DiscreteVelocitySingleAction(
+            linear_velocity=0,
+            angular_velocity=0,
+            *self.args,
+            **self.kwargs,
+        )
+        action_space_dict["stop"] = StopAction(*self.args, **self.kwargs)
 
         return action_space_dict
