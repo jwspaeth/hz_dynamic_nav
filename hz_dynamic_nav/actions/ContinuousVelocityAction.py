@@ -79,12 +79,13 @@ class ContinuousVelocityAction(SimulatorTaskAction):
         final_pos, final_rot, backwards, collided, task.is_stop_called = self.teleport(
             linear_velocity, angular_velocity
         )
-        self.update_metrics(collided, backwards)
-        return self._sim.get_observations_at(
+        agent_observations = self._sim.get_observations_at(
             position=final_pos,
             rotation=final_rot,
             keep_agent_at_new_pose=not (collided or task.is_stop_called),
         )
+        self.update_metrics(collided, backwards)
+        return agent_observations
 
     def update_metrics(self, collided, backwards_motion):
         self._sim._prev_sim_obs["collided"] = collided
@@ -113,10 +114,11 @@ class ContinuousVelocityAction(SimulatorTaskAction):
             goal_rigid_state = self.vel_control.integrate_transform(
                 self.time_step, current_rigid_state
             )
-            final_position, final_rotation = self.get_next_pos_rot(goal_rigid_state)
+            final_position, final_rotation, collided = self.get_next_pos_rot(
+                goal_rigid_state
+            )
             # negative linear velocity is forward
-            backwards = linear_velocity > 0.0
-            collided = final_position is None
+            backwards = self.linear_velocity > 0.0
 
         return final_position, final_rotation, backwards, collided, stop
 
@@ -150,10 +152,11 @@ class ContinuousVelocityAction(SimulatorTaskAction):
 
         # NB: There are some cases where ||filter_end - end_pos|| > 0 when a
         # collision _didn't_ happen. One such case is going up stairs.  Instead,
-        # we check to see if the the amount moved after the application of the
+        # we check to see if the amount moved after the application of the
         # filter is _less_ than the amount moved before the application of the
         # filter.
         EPS = 1e-5
         collided = (dist_moved_after_filter + EPS) < dist_moved_before_filter
+        collided = collided or final_position is None
 
-        return final_position, final_rotation
+        return final_position, final_rotation, collided
