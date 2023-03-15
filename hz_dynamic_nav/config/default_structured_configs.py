@@ -47,19 +47,15 @@ class DiscreteVelocityMultiActionConfig(ActionConfig):
     type: str = (
         "DiscreteVelocityMultiAction"  # must be same name as class defined below!!
     )
-    vel_tiling_scheme: str = "density"
-    lin_vel_tile_density: float = 0.025  # units / tile
-    ang_vel_tile_density: float = 0.25  # units / tile
-    lin_vel_num_tiles: int = 3
-    ang_vel_num_tiles: int = 3
+    vel_tiling_scheme: str = "num"
+    lin_vel_tile_density: float = 0.025  # m / tile
+    ang_vel_tile_density: float = 0.25  # deg / tile
+    lin_vel_num_tiles: int = 4
+    ang_vel_num_tiles: int = 4
     # meters/sec:
     lin_vel_range: List[float] = field(default_factory=lambda: [-0.25, 0.25])
     # deg/sec:
     ang_vel_range: List[float] = field(default_factory=lambda: [-10.0, 10.0])
-    # # meters/sec:
-    # lin_vel_range: List[float] = field(default_factory=lambda: [1.0, 1.0])
-    # # deg/sec:
-    # ang_vel_range: List[float] = field(default_factory=lambda: [1.0, 1.0])
     min_abs_lin_speed: float = 0.025  # meters/sec
     min_abs_ang_speed: float = 1.0  # deg/sec
     time_step: float = 1.0  # seconds

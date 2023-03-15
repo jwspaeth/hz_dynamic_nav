@@ -6,8 +6,8 @@ defaults:
   - /habitat/logging: wandb
   - /habitat/action: discrete_actions
   - override /habitat/task: dynamicnav
-  - override /benchmark/nav/pointnav: pointnav_gibson
-  # - override /benchmark/nav/pointnav: pointnav_hm3d
+  # - override /benchmark/nav/pointnav: pointnav_gibson
+  - override /benchmark/nav/pointnav: pointnav_hm3d
   - override /habitat/simulator/agents@habitat.simulator.agents.main_agent: depth_agent
   - _self_
 

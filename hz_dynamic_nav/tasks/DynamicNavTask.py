@@ -60,6 +60,22 @@ class DynamicNavTask(NavigationTask):
 
         return observations
 
+    def _check_episode_is_active(self, *args: Any, **kwargs: Any) -> bool:
+        result = super()._check_episode_is_active(*args, **kwargs)
+        # if not result:
+        #     print("Measures: ")
+        #     success = self.measurements.measures["success"].get_metric()
+        #     distance_to_goal = self.measurements.measures[
+        #         "distance_to_goal"
+        #     ].get_metric()
+        #     human_collision = self.measurements.measures["human_collision"].get_metric()
+        #     collisions = self.measurements.measures["collisions"].get_metric()
+        #     print(f"\tSuccess: {success}")
+        #     print(f"\tDistance to goal: {distance_to_goal}")
+        #     print(f"\tHuman collision: {human_collision}")
+        #     print(f"\tCollisions: {collisions}")
+        return result
+
     @property
     def action_space(self) -> Space:
         """
