@@ -55,25 +55,16 @@ class DynamicNavTask(NavigationTask):
         )
 
         self._is_episode_active = self._check_episode_is_active(
-            observations=observations, action=action, episode=episode
+            observations=observations, action=action, episode=episode, task=self
         )
 
         return observations
 
     def _check_episode_is_active(self, *args: Any, **kwargs: Any) -> bool:
+        # Manually call this, because we need it to be updated earlier
+        # than it is currently updated in env.py.
+        self.measurements.measures["human_collision"].update_metric(*args, **kwargs)
         result = super()._check_episode_is_active(*args, **kwargs)
-        # if not result:
-        #     print("Measures: ")
-        #     success = self.measurements.measures["success"].get_metric()
-        #     distance_to_goal = self.measurements.measures[
-        #         "distance_to_goal"
-        #     ].get_metric()
-        #     human_collision = self.measurements.measures["human_collision"].get_metric()
-        #     collisions = self.measurements.measures["collisions"].get_metric()
-        #     print(f"\tSuccess: {success}")
-        #     print(f"\tDistance to goal: {distance_to_goal}")
-        #     print(f"\tHuman collision: {human_collision}")
-        #     print(f"\tCollisions: {collisions}")
         return result
 
     @property
