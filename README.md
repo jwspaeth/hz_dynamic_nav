@@ -59,3 +59,7 @@
       ```
       python -um hz_dynamic_nav.run --exp-config hz_dynamic_nav/config/benchmark/nav/dynamicnav/ddppo_dynamicnav.yaml --run-type eval habitat_baselines.load_resume_state_config=False habitat_baselines.num_environments=1 habitat_baselines.eval_ckpt_path_dir=/coc/testnvme/nyokoyama3/frontier_explorer/slurm/ddppo_pointnav/ckpts/latest.pth habitat_baselines.eval.video_option=["disk"] habitat_baselines.test_episode_count=10
       ```
+      
+      ```
+      python -um hz_dynamic_nav.run --config-path=../experiments/ --config-name config/discretization/experiment_base.yaml habitat_baselines.evaluate=True habitat_baselines.eval_ckpt_path_dir=experiments/results/discretization_2/results/0/ckpts/latest.pth habitat_baselines.num_environments=1
+      ```
