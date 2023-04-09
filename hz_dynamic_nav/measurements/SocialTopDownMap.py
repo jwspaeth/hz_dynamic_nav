@@ -32,9 +32,13 @@ class SocialTopDownMap(TopDownMap):
 
     def update_metric(self, episode, action, *args: Any, **kwargs: Any):
         self._step_count += 1
-        house_map, map_agent_x, map_agent_y = self.update_map(
-            self._sim.get_agent_state().position
+        # Assume only one agent, agent_index=0
+        agent_state = self._sim.get_agent_state()
+        map_agent_x, map_agent_y = self.update_map(
+            agent_state=agent_state, agent_index=0
         )
+        agent_map_coords = [[map_agent_x, map_agent_y]]
+        agent_angles = [self.get_polar_angle(agent_state)]
 
         people_map_coords = [
             maps.to_grid(
@@ -47,9 +51,9 @@ class SocialTopDownMap(TopDownMap):
         ]
 
         self._metric = {
-            "map": house_map,
+            "map": self._top_down_map,
             "fog_of_war_mask": self._fog_of_war_mask,
-            "agent_map_coord": (map_agent_x, map_agent_y),
+            "agent_map_coord": agent_map_coords,
             "people_map_coord": people_map_coords,
-            "agent_angle": self.get_polar_angle(),
+            "agent_angle": agent_angles,
         }

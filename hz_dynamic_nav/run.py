@@ -19,15 +19,22 @@ from hz_dynamic_nav.config.default_structured_configs import HzDynamicNavConfigP
 )
 def main(cfg: "DictConfig"):
     cfg = patch_config(cfg)
+
+    # Resolve config so it can be pickled to all environments
     with read_write(cfg):
         OmegaConf.resolve(cfg)
+
+    # Print config for readability
     print(OmegaConf.to_yaml(cfg))
     execute_exp(cfg, "eval" if cfg.habitat_baselines.evaluate else "train")
 
 
 if __name__ == "__main__":
+    # Setup hydra plugins and resolvers
     register_hydra_plugin(HabitatBaselinesConfigPlugin)
     register_hydra_plugin(HzDynamicNavConfigPlugin)
+
+    # Check for old API from habitat_baselines
     if "--exp-config" in sys.argv or "--run-type" in sys.argv:
         raise ValueError(
             "The API of run.py has changed to be compatible with hydra.\n"

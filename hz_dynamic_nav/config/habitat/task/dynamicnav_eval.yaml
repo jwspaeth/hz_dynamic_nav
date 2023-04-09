@@ -1,0 +1,20 @@
+
+
+defaults:
+  - pointnav
+  - measurements:
+    - social_top_down_map
+    - human_collision
+    - collisions
+    - collision_penalty
+    - sum_reward
+  - lab_sensors:
+    - time_sensor
+  - _self_
+
+type: DynamicNav
+reward_measure: sum_reward
+measurements:
+   sum_reward:
+      reward_terms: ["distance_to_goal_reward", "collision_penalty"]
+      reward_coefficients: [1.0, 1.0]

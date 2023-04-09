@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Tuple
 
 from habitat.config.default_structured_configs import (
     ActionConfig,
+    EnvironmentConfig,
+    FogOfWarConfig,
     LabSensorConfig,
     MeasurementConfig,
     SimulatorConfig,
@@ -91,6 +93,24 @@ class SumRewardMeasurementConfig(MeasurementConfig):
     )
 
 
+@dataclass
+class SocialTopDownMapMeasurementConfig(MeasurementConfig):
+    type: str = "SocialTopDownMap"
+    max_episode_steps: int = (
+        EnvironmentConfig().max_episode_steps
+    )  # TODO : Use OmegaConf II()
+    map_padding: int = 3
+    map_resolution: int = 1024
+    draw_source: bool = True
+    draw_border: bool = True
+    draw_shortest_path: bool = True
+    draw_view_points: bool = True
+    draw_goal_positions: bool = True
+    # axes aligned bounding boxes
+    draw_goal_aabbs: bool = True
+    fog_of_war: FogOfWarConfig = FogOfWarConfig()
+
+
 cs.store(
     package="habitat.simulator",
     group="habitat/simulator",
@@ -145,6 +165,12 @@ cs.store(
     group="habitat/task/measurements",
     name="sum_reward",
     node=SumRewardMeasurementConfig,
+)
+cs.store(
+    package="habitat.task.measurements.social_top_down_map",
+    group="habitat/task/measurements",
+    name="social_top_down_map",
+    node=SocialTopDownMapMeasurementConfig,
 )
 
 from hydra.core.config_search_path import ConfigSearchPath
