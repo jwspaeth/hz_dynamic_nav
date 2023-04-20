@@ -15,6 +15,9 @@ defaults:
 type: DynamicNav
 reward_measure: sum_reward
 measurements:
-   sum_reward:
-      reward_terms: ["distance_to_goal_reward", "collision_penalty"]
-      reward_coefficients: [1.0, 1.0]
+  sum_reward:
+    reward_terms: ["distance_to_goal_reward", "collision_penalty"]
+    reward_coefficients: [1.0, 1.0]
+  social_top_down_map:
+    fog_of_war:
+      draw: False

@@ -32,6 +32,7 @@ class DynamicNavSim(HabitatSim):
         self._people_num = config.people_num
         self.lin_speed = config.people_lin_speed
         self.ang_speed = np.deg2rad(config.people_ang_speed)
+        self.people_stop_distance = config.people_stop_distance
         self.time_step = config.time_step
 
         assert self.people_spawn_type in ["density", "num"], "Invalid people spawn type"
@@ -285,6 +286,14 @@ class ShortestPathFollowerv2:
         rigid_state = habitat_sim.bindings.RigidState(magnum_quaternion, translation)
         rigid_state = self.vel_control.integrate_transform(self.time_step, rigid_state)
 
-        self.person_reference.translation = rigid_state.translation
-        self.person_reference.rotation = rigid_state.rotation
-        self.current_position = rigid_state.translation
+        # Check if updating the location of the person would result in a collision
+        # with the agent. If so, don't update the person's location.
+        agent_pos = self._sim.get_agent_state().position
+        distance = np.sqrt(
+            (rigid_state.translation[0] - agent_pos[0]) ** 2
+            + (rigid_state.translation[2] - agent_pos[2]) ** 2
+        )
+        if distance > self._sim.people_stop_disance:
+            self.person_reference.translation = rigid_state.translation
+            self.person_reference.rotation = rigid_state.rotation
+            self.current_position = rigid_state.translation

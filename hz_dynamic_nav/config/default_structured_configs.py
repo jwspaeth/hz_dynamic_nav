@@ -24,6 +24,7 @@ class DynamicNavSimulatorConfig(SimulatorConfig):
     people_num: int = 3
     people_lin_speed: float = 0.25
     people_ang_speed: float = 10
+    people_stop_distance: float = 0.5
     time_step: float = 1.0
 
 
