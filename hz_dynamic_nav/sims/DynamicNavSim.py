@@ -12,6 +12,8 @@ from habitat.sims.habitat_simulator.habitat_simulator import HabitatSim
 from hz_dynamic_nav.utils.geometry_utils import get_heading_error, quat_to_rad
 from omegaconf import DictConfig
 
+PEOPLE_HEIGHT_OFFSET = 0.9
+
 
 @registry.register_simulator(name="DynamicNav")
 class DynamicNavSim(HabitatSim):
@@ -122,7 +124,7 @@ class DynamicNavSim(HabitatSim):
             rotation = np.normalized(rotation)
             rotation = mn.Quaternion(rotation.imag, rotation.real)
             person_reference.translation = mn.Vector3(
-                start[0], start[1] + 0.9, start[2]
+                start[0], start[1] + PEOPLE_HEIGHT_OFFSET, start[2]
             )
             person_reference.rotation = rotation
             person_reference.motion_type = habitat_sim.physics.MotionType.KINEMATIC
@@ -286,6 +288,16 @@ class ShortestPathFollowerv2:
         rigid_state = habitat_sim.bindings.RigidState(magnum_quaternion, translation)
         rigid_state = self.vel_control.integrate_transform(self.time_step, rigid_state)
 
+        orig_translation = np.array(rigid_state.translation)
+        rigid_state.translation = self._sim.pathfinder.snap_point(
+            rigid_state.translation
+        )
+
+        if np.isnan(rigid_state.translation[1]):
+            rigid_state.translation = orig_translation
+        else:
+            rigid_state.translation[1] += PEOPLE_HEIGHT_OFFSET
+
         # Check if updating the location of the person would result in a collision
         # with the agent. If so, don't update the person's location.
         agent_pos = self._sim.get_agent_state().position
@@ -293,6 +305,7 @@ class ShortestPathFollowerv2:
             (rigid_state.translation[0] - agent_pos[0]) ** 2
             + (rigid_state.translation[2] - agent_pos[2]) ** 2
         )
+
         if distance > self._sim.people_stop_disance:
             self.person_reference.translation = rigid_state.translation
             self.person_reference.rotation = rigid_state.rotation
