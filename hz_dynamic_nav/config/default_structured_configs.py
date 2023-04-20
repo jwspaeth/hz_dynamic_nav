@@ -61,6 +61,7 @@ class DiscreteVelocityMultiActionConfig(ActionConfig):
     ang_vel_range: List[float] = field(default_factory=lambda: [-10.0, 10.0])
     min_abs_lin_speed: float = 0.025  # meters/sec
     min_abs_ang_speed: float = 1.0  # deg/sec
+    use_stop_action: bool = False
     time_step: float = 1.0  # seconds
 
 
