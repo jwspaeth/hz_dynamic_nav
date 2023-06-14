@@ -68,37 +68,25 @@ class DiscreteVelocitySingleAction(SimulatorTaskAction):
         self._sim._prev_sim_obs["backwards_motion"] = backwards_motion
 
     def teleport(self):
-        # Stop is called if both linear/angular speed are below their threshold
-        stop = (
-            abs(self.linear_velocity) < self.min_abs_lin_speed
-            and abs(self.angular_velocity) < self.min_abs_ang_speed
+        agent_state = self._sim.get_agent_state()
+        agent_magnum_quat = mn.Quaternion(
+            agent_state.rotation.imag, agent_state.rotation.real
         )
-        if stop:
-            final_position, final_rotation, backwards, collided = (
-                None, None, False, False,  # fmt: skip
-            )
-        else:
-            agent_state = self._sim.get_agent_state()
-            agent_magnum_quat = mn.Quaternion(
-                agent_state.rotation.imag, agent_state.rotation.real
-            )
-            current_rigid_state = RigidState(agent_magnum_quat, agent_state.position)
-            angular_velocity = np.deg2rad(self.angular_velocity)
-            # negative linear velocity is forward
-            self.vel_control.linear_velocity = np.array(
-                [0.0, 0.0, -self.linear_velocity]
-            )
-            self.vel_control.angular_velocity = np.array([0.0, angular_velocity, 0.0])
-            goal_rigid_state = self.vel_control.integrate_transform(
-                self.time_step, current_rigid_state
-            )
-            final_position, final_rotation, collided = self.get_next_pos_rot(
-                goal_rigid_state
-            )
-            # negative linear velocity is forward
-            backwards = self.linear_velocity > 0.0
+        current_rigid_state = RigidState(agent_magnum_quat, agent_state.position)
+        angular_velocity = np.deg2rad(self.angular_velocity)
+        # negative linear velocity is forward
+        self.vel_control.linear_velocity = np.array([0.0, 0.0, -self.linear_velocity])
+        self.vel_control.angular_velocity = np.array([0.0, angular_velocity, 0.0])
+        goal_rigid_state = self.vel_control.integrate_transform(
+            self.time_step, current_rigid_state
+        )
+        final_position, final_rotation, collided = self.get_next_pos_rot(
+            goal_rigid_state
+        )
+        # negative linear velocity is forward
+        backwards = self.linear_velocity > 0.0
 
-        return final_position, final_rotation, backwards, collided, stop
+        return final_position, final_rotation, backwards, collided, False
 
     def get_next_pos_rot(self, goal_rigid_state: RigidState):
         """
