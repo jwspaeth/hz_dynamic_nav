@@ -1,3 +1,4 @@
+import copy
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
@@ -21,6 +22,7 @@ class DynamicNavTask(NavigationTask):
                     self.actions[k] = v
 
         self._action_keys = list(self.actions.keys())
+        self._is_stop_called = False
 
     def reset(self, episode: Episode):
         self._sim.reset_people()
@@ -60,10 +62,28 @@ class DynamicNavTask(NavigationTask):
 
         return observations
 
+    @property
+    def is_stop_called(self):
+        return self._is_stop_called
+
+    @is_stop_called.setter
+    def is_stop_called(self, value):
+        self._is_stop_called = value
+
     def _check_episode_is_active(self, *args: Any, **kwargs: Any) -> bool:
-        # Manually call this, because we need it to be updated earlier
+        # Manually call these, because we need it to be updated earlier
         # than it is currently updated in env.py.
+        self.measurements.measures["distance_to_goal"].update_metric(*args, **kwargs)
         self.measurements.measures["human_collision"].update_metric(*args, **kwargs)
+
+        # End episode if success is True
+        success = self.measurements.measures["success"].assess_success_distance(
+            *args, **kwargs
+        )
+        if success == 1.0:
+            self.is_stop_called = True
+            return False
+
         result = super()._check_episode_is_active(*args, **kwargs)
         return result
 
