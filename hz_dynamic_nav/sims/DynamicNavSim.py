@@ -218,7 +218,10 @@ class ShortestPathFollowerv2:
         self.lin_speed = lin_speed
         self.ang_speed = ang_speed
         self.time_step = time_step
-        self.max_linear_vel = np.random.rand() * (0.1) + self.lin_speed - 0.1
+        # Scale noise to be 40% of max speed.
+        # 0.4 comes from original 0.1 multiplier with default speed of 0.25 (0.1/0.25 = 0.4)
+        lin_vel_noise = (np.random.rand() - 0.5) * (2) * (self.lin_speed * 0.4)
+        self.max_linear_vel = self.lin_speed + lin_vel_noise
 
     def step(self):
         """
@@ -306,7 +309,7 @@ class ShortestPathFollowerv2:
             + (rigid_state.translation[2] - agent_pos[2]) ** 2
         )
 
-        if distance > self._sim.people_stop_disance:
+        if distance > self._sim.people_stop_distance:
             self.person_reference.translation = rigid_state.translation
             self.person_reference.rotation = rigid_state.rotation
             self.current_position = rigid_state.translation
