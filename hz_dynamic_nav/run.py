@@ -12,6 +12,20 @@ from omegaconf import OmegaConf, read_write
 from hz_dynamic_nav.config.default_structured_configs import HzDynamicNavConfigPlugin
 
 
+def match_people_speed(cfg):
+    # Take max speed from action space and assign it to people speed
+    # This will only work for velocity action spaces and fail for others
+    with read_write(cfg):
+        action_keys = list(cfg.habitat.task.actions.keys())
+        action_key = action_keys[0]
+        cfg.habitat.simulator.people_lin_speed = cfg.habitat.task.actions[
+            action_key
+        ].lin_vel_range[1]
+        cfg.habitat.simulator.people_ang_speed = cfg.habitat.task.actions[
+            action_key
+        ].ang_vel_range[1]
+
+
 @hydra.main(
     version_base=None,
     config_path="config",
@@ -23,6 +37,10 @@ def main(cfg: "DictConfig"):
     # Resolve config so it can be pickled to all environments
     with read_write(cfg):
         OmegaConf.resolve(cfg)
+
+    # Match people speed to agent speed if flag is set
+    if cfg.habitat.simulator.match_people_speed:
+        match_people_speed(cfg)
 
     # Print config for readability
     print(OmegaConf.to_yaml(cfg))

@@ -26,6 +26,7 @@ class DynamicNavSimulatorConfig(SimulatorConfig):
     people_ang_speed: float = 10
     people_stop_distance: float = 0.5
     time_step: float = 1.0
+    match_people_speed: bool = False
 
 
 @dataclass
