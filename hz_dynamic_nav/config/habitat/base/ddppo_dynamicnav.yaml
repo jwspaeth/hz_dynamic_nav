@@ -22,5 +22,8 @@ habitat:
 
 habitat_baselines:
   trainer_name: ver
+  rl:
+    ver:
+      min_scenes_per_env: 1
   eval:
     video_option: ["disk"]
