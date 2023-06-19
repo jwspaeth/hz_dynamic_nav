@@ -29,6 +29,7 @@ class HumanCollision(Measure):
         for p in self._sim.people:
             distance = np.sqrt(
                 (p.current_position[0] - agent_pos[0]) ** 2
+                + (p.current_position[1] - agent_pos[1]) ** 2
                 + (p.current_position[2] - agent_pos[2]) ** 2
             )
             if distance < self._config.get("TERMINATION_RADIUS", 0.3):
