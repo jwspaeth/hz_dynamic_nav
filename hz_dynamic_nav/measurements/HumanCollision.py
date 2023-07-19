@@ -25,14 +25,25 @@ class HumanCollision(Measure):
         self._metric = False
 
     def update_metric(self, episode, task: EmbodiedTask, *args: Any, **kwargs: Any):
+        """
+        Make sure that the agent is not colliding with a human. Termination radius is in the xz plane,
+        vertical radius is in the y direction. Vertical radius exists to filter out agents on other floors.
+        :param episode:
+        :param task:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         agent_pos = self._sim.get_agent_state().position
-        for p in self._sim.people:
-            distance = np.sqrt(
+        for i, p in enumerate(self._sim.people):
+            distance_plane = np.sqrt(
                 (p.current_position[0] - agent_pos[0]) ** 2
-                + (p.current_position[1] - agent_pos[1]) ** 2
                 + (p.current_position[2] - agent_pos[2]) ** 2
             )
-            if distance < self._config.get("TERMINATION_RADIUS", 0.3):
+            distance_vert = np.sqrt((p.current_position[1] - agent_pos[1]) ** 2)
+            within_plane = distance_plane < self._config.get("TERMINATION_RADIUS", 0.3)
+            within_vert = distance_vert < self._config.get("VERTICAL_RADIUS", 1.0)
+            if within_plane and within_vert:
                 self._metric = True
                 break
 
