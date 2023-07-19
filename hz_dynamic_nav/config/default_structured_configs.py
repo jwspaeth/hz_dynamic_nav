@@ -63,6 +63,7 @@ class DiscreteVelocityMultiActionConfig(ActionConfig):
     min_abs_lin_speed: float = 0.025  # meters/sec
     min_abs_ang_speed: float = 1.0  # deg/sec
     use_stop_action: bool = False
+    use_flip_action: bool = False
     time_step: float = 1.0  # seconds
 
 

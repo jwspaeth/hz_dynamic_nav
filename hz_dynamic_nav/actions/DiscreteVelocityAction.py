@@ -146,6 +146,7 @@ class DiscreteVelocityMultiAction(RecursiveSimulatorTaskAction):
         self.min_lin_vel, self.max_lin_vel = self._config.lin_vel_range
         self.min_ang_vel, self.max_ang_vel = self._config.ang_vel_range
         self.use_stop_action = self._config.use_stop_action
+        self.use_flip_action = self._config.get("use_flip_action", False)
         self.time_step = self._config.time_step
 
         assert self.vel_tiling_scheme in [
@@ -224,5 +225,13 @@ class DiscreteVelocityMultiAction(RecursiveSimulatorTaskAction):
         )
         if self.use_stop_action:
             action_space_dict["stop"] = StopAction(*self.args, **self.kwargs)
+
+        if self.use_flip_action:
+            action_space_dict["lin0_ang180"] = DiscreteVelocitySingleAction(
+                linear_velocity=0.0,
+                angular_velocity=180,
+                *self.args,
+                **self.kwargs,
+            )
 
         return action_space_dict
