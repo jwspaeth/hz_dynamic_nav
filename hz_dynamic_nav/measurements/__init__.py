@@ -1,3 +1,4 @@
+from .BackwardsPenalty import BackwardsPenalty
 from .CollisionPenalty import AccCollisionPenalty, CollisionPenalty
 from .HumanCollision import HumanCollision
 from .SocialTopDownMap import SocialTopDownMap

@@ -205,24 +205,23 @@ class DiscreteVelocityMultiAction(RecursiveSimulatorTaskAction):
         return self.min_ang_vel + tile * self.ang_vel_tile_density
 
     def create_action_space(self):
+        # Generate velocities and add explicit 0 velocity for both linear and angular
+        linear_velocities = [
+            self.get_lin_vel_from_tile(i) for i in range(self.lin_vel_num_tiles)
+        ] + [0]
+        angular_velocities = [
+            self.get_ang_vel_from_tile(i) for i in range(self.ang_vel_num_tiles)
+        ] + [0]
         action_space_dict = {}
-        for i in range(self.lin_vel_num_tiles):
-            for j in range(self.ang_vel_num_tiles):
-                key = f"lin{i}_ang{j}"
-                linear_velocity = self.get_lin_vel_from_tile(i)
-                angular_velocity = self.get_ang_vel_from_tile(j)
+        for linear_velocity in linear_velocities:
+            for angular_velocity in angular_velocities:
+                key = f"lin{linear_velocity}_ang{angular_velocity}"
                 action_space_dict[key] = DiscreteVelocitySingleAction(
                     linear_velocity=linear_velocity,
                     angular_velocity=angular_velocity,
                     *self.args,
                     **self.kwargs,
                 )
-        action_space_dict["lin0_ang0"] = DiscreteVelocitySingleAction(
-            linear_velocity=0,
-            angular_velocity=0,
-            *self.args,
-            **self.kwargs,
-        )
         if self.use_stop_action:
             action_space_dict["stop"] = StopAction(*self.args, **self.kwargs)
 

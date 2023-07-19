@@ -3,6 +3,7 @@
 defaults:
   - pointnav
   - measurements:
+    - backwards_penalty
     - human_collision
     - collisions
     - collision_penalty

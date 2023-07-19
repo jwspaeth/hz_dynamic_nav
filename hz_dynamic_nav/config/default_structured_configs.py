@@ -52,8 +52,8 @@ class DiscreteVelocityMultiActionConfig(ActionConfig):
         "DiscreteVelocityMultiAction"  # must be same name as class defined below!!
     )
     vel_tiling_scheme: str = "num"
-    lin_vel_tile_density: float = 0.025  # m / tile
-    ang_vel_tile_density: float = 0.25  # deg / tile
+    lin_vel_tile_density: float = 0.05  # m / action
+    ang_vel_tile_density: float = 2.0  # deg / action
     lin_vel_num_tiles: int = 4
     ang_vel_num_tiles: int = 4
     # meters/sec:
@@ -65,6 +65,12 @@ class DiscreteVelocityMultiActionConfig(ActionConfig):
     use_stop_action: bool = False
     use_flip_action: bool = False
     time_step: float = 1.0  # seconds
+
+
+@dataclass
+class BackwardsPenaltyMeasurementConfig(MeasurementConfig):
+    type: str = "BackwardsPenalty"
+    backwards_penalty: float = 0.003
 
 
 @dataclass
@@ -141,6 +147,13 @@ cs.store(
     group="habitat/task/actions",
     name="discrete_velocity_multi_action",
     node=DiscreteVelocityMultiActionConfig,
+)
+
+cs.store(
+    package="habitat.task.measurements.backwards_penalty",
+    group="habitat/task/measurements",
+    name="backwards_penalty",
+    node=BackwardsPenaltyMeasurementConfig,
 )
 
 cs.store(
